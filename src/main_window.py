@@ -116,7 +116,7 @@ class MainWindow(Adw.ApplicationWindow):
         self.username_entry.set_hexpand(True)
         self.username_entry.connect("activate", self._on_username_activate)
 
-        go_btn = Gtk.Button(label="Git")
+        go_btn = Gtk.Button(label="Load")
         go_btn.add_css_class("suggested-action")
         go_btn.connect("clicked", self._on_username_activate)
 
