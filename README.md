@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icons/github-puller.svg" alt="GitHub Puller" width="150" height="150">
+<img src="icons/io.github.alihaydarsucu.GitHubPuller.svg" alt="GitHub Puller" width="150" height="150">
 
 # GitHub Puller
 
