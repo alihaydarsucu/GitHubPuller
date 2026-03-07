@@ -1,6 +1,6 @@
 # GitHub Puller Makefile
 
-.PHONY: help install install-sys install-venv uninstall clean test run run-debug dev flatpak check-deps
+.PHONY: help install install-sys install-venv uninstall clean run run-debug dev check-deps
 
 help:
 	@echo "GitHub Puller - Makefile Commands"
@@ -15,11 +15,6 @@ help:
 	@echo "  make dev         - Prepare development environment"
 	@echo "  make run         - Run the application"
 	@echo "  make run-debug   - Run in debug mode"
-	@echo "  make test        - Run tests"
-	@echo ""
-	@echo "📦 Packaging:"
-	@echo "  make flatpak     - Build Flatpak package"
-	@echo "  make deb         - Build Debian package"
 	@echo ""
 	@echo "🧹 Cleanup:"
 	@echo "  make clean       - Clean temporary files"
@@ -103,20 +98,6 @@ run:
 run-debug:
 	@echo "🐛 Starting GitHub Puller in debug mode..."
 	G_MESSAGES_DEBUG=all python3 main.py
-
-test:
-	@echo "🧪 Running tests..."
-	python3 -m pytest tests/ -v || echo "❌ Test directory not found"
-
-# Packaging
-flatpak:
-	@echo "📦 Building Flatpak package..."
-	flatpak-builder --user --install --force-clean build-dir io.github.alihaydarsucu.GitHubPuller.json
-	@echo "✅ Flatpak package ready!"
-
-deb:
-	@echo "📦 Building Debian package..."
-	@echo "❌ Not supported yet. Check GitHub for contributions!"
 
 # Cleanup
 clean:
