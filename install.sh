@@ -58,6 +58,15 @@ fi
 echo ""
 echo "🔧 Installing GitHub Puller..."
 
+# Create temporary directory
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
+# Download and extract release
+echo "📥 Downloading GitHub Puller v1.0.3..."
+curl -fsSL https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.3.tar.gz | tar -xz
+cd GitHubPuller-1.0.3
+
 # Local installation - bypass system Python policies
 pip install --user . --break-system-packages
 
@@ -73,6 +82,10 @@ cp icons/io.github.alihaydarsucu.GitHubPuller.svg ~/.local/share/icons/hicolor/s
 # Copy metainfo file
 mkdir -p ~/.local/share/metainfo
 cp io.github.alihaydarsucu.GitHubPuller.metainfo.xml ~/.local/share/metainfo/
+
+# Cleanup temporary directory
+cd ..
+rm -rf "$TEMP_DIR"
 
 # Update desktop database
 if command -v update-desktop-database >/dev/null 2>&1; then
