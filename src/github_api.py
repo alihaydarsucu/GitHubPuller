@@ -4,7 +4,7 @@ import json
 GITHUB_API = "https://api.github.com"
 
 def api_get(path: str, token: str = "") -> list | dict:
-    """GitHub API çağrısı yap"""
+    """Make GitHub API call"""
     url = GITHUB_API + path
     req = urllib.request.Request(url)
     req.add_header("Accept", "application/vnd.github+json")
@@ -15,11 +15,11 @@ def api_get(path: str, token: str = "") -> list | dict:
         return json.loads(r.read().decode())
 
 def fetch_all_repos(username: str, token: str = "") -> list:
-    """Kullanıcının tüm repolarını getir"""
+    """Fetch all user repositories"""
     page, all_repos = 1, []
     
-    # Token varsa authenticated endpoint kullan (private repolar dahil)
-    # Token yoksa public endpoint kullan  
+    # Use authenticated endpoint if token exists (includes private repos)
+    # Use public endpoint if no token  
     if token:
         # Authenticated user endpoint - private repolar dahil
         endpoint_base = "/user/repos"
@@ -36,9 +36,6 @@ def fetch_all_repos(username: str, token: str = "") -> list:
     return sorted(all_repos, key=lambda r: r["name"].lower())
 
 def fetch_branches(username: str, repo: str, token: str = "") -> list:
-    """Repo dallarını getir"""
-    data = api_get(f"/repos/{username}/{repo}/branches?per_page=100", token)
-    return [b["name"] for b in data]
-    """Repo dallarını getir"""
+    """Fetch repository branches"""
     data = api_get(f"/repos/{username}/{repo}/branches?per_page=100", token)
     return [b["name"] for b in data]

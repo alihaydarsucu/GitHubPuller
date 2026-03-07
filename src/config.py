@@ -16,42 +16,42 @@ class Config:
         self.data = self._load_config()
     
     def _load_config(self):
-        """Yapılandırmayı yükle"""
+        """Load configuration"""
         if not CONFIG_FILE.exists():
             return DEFAULT_CONFIG.copy()
         
         try:
             with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
                 config = json.load(f)
-                # Eksik anahtarları varsayılan değerlerle doldur
+                # Fill missing keys with default values
                 for key, value in DEFAULT_CONFIG.items():
                     if key not in config:
                         config[key] = value
                 return config
         except Exception as e:
-            print(f"Config yükleme hatası: {e}")
+            print(f"Config loading error: {e}")
             return DEFAULT_CONFIG.copy()
     
     def save_config(self):
-        """Yapılandırmayı kaydet"""
+        """Save configuration"""
         try:
             CONFIG_DIR.mkdir(parents=True, exist_ok=True)
             with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
                 json.dump(self.data, f, indent=2, ensure_ascii=False)
         except Exception as e:
-            print(f"Config kaydetme hatası: {e}")
+            print(f"Config saving error: {e}")
     
     def get(self, key, default=None):
-        """Yapılandırma değeri al"""
+        """Get configuration value"""
         return self.data.get(key, default)
     
     def set(self, key, value):
-        """Yapılandırma değeri ayarla ve kaydet"""
+        """Set configuration value and save"""
         try:
             self.data[key] = value
             self.save_config()
         except Exception as e:
-            print(f"Config ayarlama hatası: {e}")
+            print(f"Config setting error: {e}")
     
     @property
     def username(self):

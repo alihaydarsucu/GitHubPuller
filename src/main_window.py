@@ -12,19 +12,19 @@ from .config import Config
 APP_VERSION = "1.0.0"
 
 class MainWindow(Adw.ApplicationWindow):
-    """Ana pencere sınıfı"""
+    """Main window class"""
     def __init__(self, app):
         super().__init__(application=app)
         self.set_title("GitHub Puller")
         self.set_default_size(780, 680)
         self.set_size_request(540, 400)
 
-        # Yapılandırma
+        # Configuration
         try:
             self.config = Config()
         except Exception as e:
-            print(f"Config hatası: {e}")
-            # Fallback değerler
+            print(f"Config error: {e}")
+            # Fallback values
             class FallbackConfig:
                 def __init__(self):
                     self.data = {"username": "", "token": "", "target_dir": os.path.expanduser("~/Desktop/Projects")}
@@ -44,18 +44,20 @@ class MainWindow(Adw.ApplicationWindow):
                 def target_dir(self, value): pass
             self.config = FallbackConfig()
         
-        # Değişkenler - ilk açıldığında kullanıcı adı boş
+        # Variables - username empty on first open
         self.username = self.config.username
         self.token_val = self.config.token
         self.target_dir = self.config.target_dir
         self.repo_items: list[RepoItem] = []
         self.pull_running = False
+        self.show_public = True
+        self.show_private = True
         
         print(f"MainWindow initialized with username: '{self.username}'")
         print(f"Target dir: {self.target_dir}")
 
         self._build()
-        # Sadece kullanıcı adı varsa repoları yükle
+        # Only load repos if username exists
         if self.username:
             print(f"Loading repos for user: {self.username}")
             GLib.idle_add(self._load_repos)
@@ -63,15 +65,15 @@ class MainWindow(Adw.ApplicationWindow):
             print("No username set, showing welcome message")
 
     def _build(self):
-        """Arayüz oluştur"""
+        """Create interface"""
         print("Building GUI components...")
         
-        # Toast overlay (bildirimler için)
+        # Toast overlay (for notifications)
         self.toast_overlay = Adw.ToastOverlay()
         self.set_content(self.toast_overlay)
         print("✓ Toast overlay created")
 
-        # Ana dikey kutu
+        # Main vertical box
         root_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.toast_overlay.set_child(root_box)
         print("✓ Root box created")
@@ -82,26 +84,26 @@ class MainWindow(Adw.ApplicationWindow):
 
         title_widget = Adw.WindowTitle(
             title="GitHub Puller",
-            subtitle=f"@{self.username}" if self.username else "Kullanıcı adı belirtilmedi"
+            subtitle=f"@{self.username}" if self.username else "No username specified"
         )
         header.set_title_widget(title_widget)
         self.title_widget = title_widget
 
-        # Ayarlar butonu (token için)
+        # Settings button (for token)
         settings_btn = Gtk.Button(icon_name="emblem-system-symbolic")
         settings_btn.set_tooltip_text("Ayarlar")
         settings_btn.connect("clicked", self._show_settings)
         header.pack_end(settings_btn)
 
-        # Yenile butonu
+        # Refresh button
         self.refresh_btn = Gtk.Button(icon_name="view-refresh-symbolic")
-        self.refresh_btn.set_tooltip_text("Repoları Yenile")
+        self.refresh_btn.set_tooltip_text("Refresh Repositories")
         self.refresh_btn.connect("clicked", lambda _: self._load_repos())
         header.pack_start(self.refresh_btn)
 
         root_box.append(header)
 
-        # ── Kullanıcı adı + filtre çubuğu ──
+        # ── Username + filter bar ──
         toolbar_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         toolbar_box.set_margin_start(12)
         toolbar_box.set_margin_end(12)
@@ -109,8 +111,8 @@ class MainWindow(Adw.ApplicationWindow):
         toolbar_box.set_margin_bottom(6)
 
         self.username_entry = Gtk.Entry()
-        self.username_entry.set_text(self.username)  # Config'den gelen değer
-        self.username_entry.set_placeholder_text("GitHub kullanıcı adı")
+        self.username_entry.set_text(self.username)  # Value from config
+        self.username_entry.set_placeholder_text("GitHub username")
         self.username_entry.set_hexpand(True)
         self.username_entry.connect("activate", self._on_username_activate)
 
@@ -119,7 +121,7 @@ class MainWindow(Adw.ApplicationWindow):
         go_btn.connect("clicked", self._on_username_activate)
 
         self.search_entry = Gtk.SearchEntry()
-        self.search_entry.set_placeholder_text("Repo ara…")
+        self.search_entry.set_placeholder_text("Search repositories…")
         self.search_entry.set_hexpand(True)
         self.search_entry.connect("search-changed", self._on_search)
 
@@ -130,33 +132,46 @@ class MainWindow(Adw.ApplicationWindow):
         root_box.append(toolbar_box)
         root_box.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
-        # ── Seçim toolbar ──
+        # ── Selection toolbar ──
         sel_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         sel_bar.set_margin_start(12)
         sel_bar.set_margin_end(12)
         sel_bar.set_margin_top(4)
         sel_bar.set_margin_bottom(4)
 
-        self.sel_label = Gtk.Label(label="0 repo seçili")
+        self.sel_label = Gtk.Label(label="0 repos selected")
         self.sel_label.add_css_class("dim-label")
         self.sel_label.set_hexpand(True)
         self.sel_label.set_xalign(0)
 
-        sel_all_btn = Gtk.Button(label="Tümünü Seç")
+        # Public/Private filter toggles
+        public_btn = Gtk.ToggleButton(label="Public")
+        public_btn.set_active(True)
+        public_btn.add_css_class("flat")
+        public_btn.connect("toggled", self._on_public_filter_changed)
+        
+        private_btn = Gtk.ToggleButton(label="Private")
+        private_btn.set_active(True)
+        private_btn.add_css_class("flat")
+        private_btn.connect("toggled", self._on_private_filter_changed)
+
+        sel_all_btn = Gtk.Button(label="Select All")
         sel_all_btn.add_css_class("flat")
         sel_all_btn.connect("clicked", lambda _: self._select_all(True))
 
-        clear_btn = Gtk.Button(label="Temizle")
+        clear_btn = Gtk.Button(label="Clear")
         clear_btn.add_css_class("flat")
         clear_btn.connect("clicked", lambda _: self._select_all(False))
 
         sel_bar.append(self.sel_label)
+        sel_bar.append(public_btn)
+        sel_bar.append(private_btn)
         sel_bar.append(clear_btn)
         sel_bar.append(sel_all_btn)
         root_box.append(sel_bar)
         root_box.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
-        # ── Repo listesi ──
+        # ── Repository list ──
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_vexpand(True)
         scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -172,29 +187,29 @@ class MainWindow(Adw.ApplicationWindow):
         scrolled.set_child(self.list_box)
         root_box.append(scrolled)
 
-        # İlk durum için bilgi satırı
+        # First state info row
         if not self.username:
             info_row = Adw.ActionRow(
-                title="Hoş geldiniz!",
-                subtitle="Başlamak için yukarıdan GitHub kullanıcı adınızı girin"
+                title="Welcome!",
+                subtitle="Enter your GitHub username above to get started"
             )
             info_row.add_prefix(Gtk.Image(icon_name="system-users-symbolic"))
             self.list_box.append(info_row)
 
         root_box.append(Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL))
 
-        # ── Alt panel: Hedef dizin + Pull butonu ──
+        # ── Bottom panel: Target directory + Pull button ──
         bottom = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         bottom.set_margin_start(12)
         bottom.set_margin_end(12)
         bottom.set_margin_top(8)
         bottom.set_margin_bottom(12)
 
-        # Hedef dizin satırı - config'den geliyor
-        dir_group = Adw.PreferencesGroup(title="Hedef Dizin")
+        # Target directory row - from config
+        dir_group = Adw.PreferencesGroup(title="Target Directory")
         dir_row = Adw.ActionRow(title=self.target_dir)
         dir_row.set_activatable(True)
-        dir_row.set_tooltip_text("Klasör seç")
+        dir_row.set_tooltip_text("Select folder")
 
         dir_icon = Gtk.Image(icon_name="folder-symbolic")
         dir_row.add_prefix(dir_icon)
@@ -202,7 +217,7 @@ class MainWindow(Adw.ApplicationWindow):
         browse_btn = Gtk.Button(icon_name="document-open-symbolic")
         browse_btn.set_valign(Gtk.Align.CENTER)
         browse_btn.add_css_class("flat")
-        browse_btn.set_tooltip_text("Gözat")
+        browse_btn.set_tooltip_text("Browse")
         browse_btn.connect("clicked", self._browse_dir)
         dir_row.add_suffix(browse_btn)
         dir_row.connect("activated", self._browse_dir)
@@ -211,8 +226,8 @@ class MainWindow(Adw.ApplicationWindow):
         dir_group.add(dir_row)
         bottom.append(dir_group)
 
-        # Pull butonu
-        self.pull_btn = Gtk.Button(label="Seçilenleri Çek")
+        # Pull button
+        self.pull_btn = Gtk.Button(label="Pull Selected")
         self.pull_btn.add_css_class("suggested-action")
         self.pull_btn.add_css_class("pill")
         self.pull_btn.set_halign(Gtk.Align.CENTER)
@@ -221,7 +236,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         bottom.append(self.pull_btn)
 
-        # İlerleme çubuğu (gizli başlar)
+        # Progress bar (hidden initially)
         self.progress_bar = Gtk.ProgressBar()
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_visible(False)
@@ -231,12 +246,12 @@ class MainWindow(Adw.ApplicationWindow):
         
         print("✅ GUI build completed successfully!")
 
-    # ── Repo yükleme ──────────────────────────────────────────────────────────
+    # ── Repository loading ────────────────────────────────────────────────────────
 
     def _load_repos(self):
-        """Repoları yükle"""
+        """Load repositories"""
         if not self.username:
-            self._toast("Lütfen kullanıcı adı girin", error=True)
+            self._toast("Please enter a username", error=True)
             return
             
         self._clear_list()
@@ -247,7 +262,7 @@ class MainWindow(Adw.ApplicationWindow):
         threading.Thread(target=self._fetch_repos_thread, daemon=True).start()
 
     def _fetch_repos_thread(self):
-        """Repoları arka planda getir"""
+        """Fetch repositories in background"""
         try:
             repos = fetch_all_repos(self.username, self.token_val)
             GLib.idle_add(self._on_repos_loaded, repos, None)
@@ -255,22 +270,22 @@ class MainWindow(Adw.ApplicationWindow):
             GLib.idle_add(self._on_repos_loaded, None, str(e))
 
     def _on_repos_loaded(self, repos, error):
-        """Repolar yüklendiğinde çalışır"""
+        """Called when repositories are loaded"""
         self._clear_list()
         self.refresh_btn.set_sensitive(True)
         self.pull_btn.set_sensitive(True)
 
         if error:
-            err_row = Adw.ActionRow(title="Hata", subtitle=error)
+            err_row = Adw.ActionRow(title="Error", subtitle=error)
             err_row.add_css_class("error")
             err_icon = Gtk.Image(icon_name="dialog-error-symbolic")
             err_row.add_prefix(err_icon)
             self.list_box.append(err_row)
-            self._toast(f"Hata: {error}", error=True)
+            self._toast(f"Error: {error}", error=True)
             return
 
         if not repos:
-            empty_row = Adw.ActionRow(title="Repo bulunamadı")
+            empty_row = Adw.ActionRow(title="No repositories found")
             empty_row.add_prefix(Gtk.Image(icon_name="folder-symbolic"))
             self.list_box.append(empty_row)
             return
@@ -282,38 +297,41 @@ class MainWindow(Adw.ApplicationWindow):
             self.list_box.append(row)
 
         self._update_sel_label()
-        self._toast(f"{len(repos)} repo yüklendi")
+        self._toast(f"{len(repos)} repositories loaded")
+        
+        # Apply current filters to newly loaded repositories
+        self._apply_filters()
 
     def _make_spinner_row(self):
-        """Yükleme spinner'ı oluştur"""
-        row = Adw.ActionRow(title="Repolar yükleniyor…")
+        """Create loading spinner"""
+        row = Adw.ActionRow(title="Loading repositories…")
         sp = Gtk.Spinner()
         sp.start()
         row.add_prefix(sp)
         return row
 
     def _make_repo_row(self, item: RepoItem) -> Adw.ActionRow:
-        """Repo satırı oluştur"""
+        """Create repository row"""
         row = Adw.ActionRow()
         
-        # Repo adı ve sahibi
+        # Repo name and owner
         if item.owner != self.username:
-            # Farklı sahipse owner'i göster
+            # Show owner if different
             title = f"{item.owner}/{item.name}"
         else:
-            # Kendi reposu ise sadece repo adı
+            # Just repo name if own repo
             title = item.name
             
         row.set_title(title)
         
-        # Alt yazı: privacy + açıklama
+        # Subtitle: privacy + description
         subtitle_parts = []
         if item.private:
             subtitle_parts.append("🔒 Private")
         else:
             subtitle_parts.append("🌐 Public")
             
-        # Eğer farklı sahibi varsa bunu da belirt
+        # If different owner, also specify this
         if item.owner != self.username:
             subtitle_parts.append(f"(Sahibi: @{item.owner})")
             
@@ -326,7 +344,7 @@ class MainWindow(Adw.ApplicationWindow):
         row.add_prefix(check)
         item._check_widget = check
 
-        # Branch dropdown (başta gizli)
+        # Branch dropdown (hidden initially)
         branch_combo = Gtk.DropDown()
         branch_combo.set_valign(Gtk.Align.CENTER)
         branch_combo.set_visible(False)
@@ -334,7 +352,7 @@ class MainWindow(Adw.ApplicationWindow):
         row.add_suffix(branch_combo)
         item._branch_combo = branch_combo
 
-        # Yükleniyor spinner (branch için, gizli)
+        # Loading spinner (for branch, hidden)
         branch_spinner = Gtk.Spinner()
         branch_spinner.set_visible(False)
         branch_spinner.set_valign(Gtk.Align.CENTER)
@@ -344,10 +362,10 @@ class MainWindow(Adw.ApplicationWindow):
         row.item = item
         return row
 
-    # ── Etkileşim ─────────────────────────────────────────────────────────────
+    # ── Interaction ───────────────────────────────────────────────────────────────
 
     def _on_check_toggled(self, check, item: RepoItem, row):
-        """Checkbox değiştiğinde çalışır"""
+        """Called when checkbox changes"""
         item.selected = check.get_active()
         if item.selected and not item.branches_loaded and not item.loading:
             self._load_branches(item)
@@ -355,7 +373,7 @@ class MainWindow(Adw.ApplicationWindow):
         self._update_sel_label()
 
     def _load_branches(self, item: RepoItem):
-        """Branch'leri yükle"""
+        """Load branches"""
         item.loading = True
         item._branch_spinner.start()
         item._branch_spinner.set_visible(True)
@@ -373,7 +391,7 @@ class MainWindow(Adw.ApplicationWindow):
             GLib.idle_add(self._on_branches_loaded, item, None, str(e))
 
     def _on_branches_loaded(self, item: RepoItem, branches, error):
-        """Branch'ler yüklendiğinde çalışır"""
+        """Called when branches are loaded"""
         item.loading = False
         item._branch_spinner.stop()
         item._branch_spinner.set_visible(False)
@@ -397,85 +415,109 @@ class MainWindow(Adw.ApplicationWindow):
         item._branch_combo.set_visible(item.selected)
 
     def _on_branch_changed(self, combo, _param, item: RepoItem):
-        """Branch değiştiğinde çalışır"""
+        """Called when branch changes"""
         idx = combo.get_selected()
         if item.branches and idx < len(item.branches):
             item.chosen_branch = item.branches[idx]
 
     def _on_search(self, entry):
-        """Arama kutusunda değişiklik olduğunda çalışır"""
-        query = entry.get_text().lower()
+        """Called when search box changes"""
+        self._apply_filters()
+
+    def _on_public_filter_changed(self, button):
+        """Called when public filter changes"""
+        self.show_public = button.get_active()
+        self._apply_filters()
+
+    def _on_private_filter_changed(self, button):
+        """Called when private filter changes"""  
+        self.show_private = button.get_active()
+        self._apply_filters()
+
+    def _apply_filters(self):
+        """Apply search and public/private filters"""
+        query = self.search_entry.get_text().lower()
         row = self.list_box.get_first_child()
         while row:
             if hasattr(row, "item"):
-                visible = query in row.item.name.lower()
+                # Check search filter
+                search_match = query in row.item.name.lower()
+                
+                # Check public/private filter  
+                type_match = True
+                if row.item.private and not self.show_private:
+                    type_match = False
+                elif not row.item.private and not self.show_public:
+                    type_match = False
+                
+                visible = search_match and type_match
                 row.set_visible(visible)
             row = row.get_next_sibling()
 
     def _on_username_activate(self, *_):
-        """Kullanıcı adı değiştiğinde çalışır"""
+        """Called when username changes"""
         new_username = self.username_entry.get_text().strip()
         if new_username and new_username != self.username:
             self.username = new_username
-            self.config.username = new_username  # Config'e kaydet
+            self.config.username = new_username  # Save to config
             self.title_widget.set_subtitle(f"@{self.username}")
             self.repo_items.clear()
             self._load_repos()
         elif not new_username:
-            self._toast("Lütfen geçerli bir kullanıcı adı girin", error=True)
+            self._toast("Please enter a valid username", error=True)
 
     def _select_all(self, val: bool):
-        """Tümünü seç/temizle"""
+        """Select all/clear all"""
         for item in self.repo_items:
             if item._check_widget.get_visible():
                 item._check_widget.set_active(val)
         self._update_sel_label()
 
     def _update_sel_label(self):
-        """Seçili repo sayısını güncelle"""
+        """Update selected repository count"""
         n = sum(1 for i in self.repo_items if i.selected)
-        self.sel_label.set_label(f"{n} repo seçili")
+        self.sel_label.set_label(f"{n} repos selected")
 
     def _clear_list(self):
-        """Liste içeriğini temizle"""
+        """Clear list content"""
         while True:
             child = self.list_box.get_first_child()
             if child is None:
                 break
             self.list_box.remove(child)
 
-    # ── Dizin seçme ───────────────────────────────────────────────────────────
+    # ── Directory selection ────────────────────────────────────────────────────────────
 
     def _browse_dir(self, *_):
-        """Dizin seçme diyaloğu"""
+        """Directory selection dialog"""
         dialog = Gtk.FileDialog()
-        dialog.set_title("Hedef Dizin Seç")
+        dialog.set_title("Select Target Directory")
         dialog.set_initial_folder(Gio.File.new_for_path(self.target_dir))
         dialog.select_folder(self, None, self._on_dir_selected)
 
     def _on_dir_selected(self, dialog, result):
-        """Dizin seçildiğinde çalışır"""
+        """Called when directory is selected"""
         try:
             folder = dialog.select_folder_finish(result)
             if folder:
                 self.target_dir = folder.get_path()
-                self.config.target_dir = self.target_dir  # Config'e kaydet
+                self.config.target_dir = self.target_dir  # Save to config
                 self.dir_row.set_title(self.target_dir)
-                self._toast(f"Hedef dizin değiştirildi: {self.target_dir}")
+                self._toast(f"Target directory changed: {self.target_dir}")
         except Exception:
             pass
 
     # ── Pull / Clone ──────────────────────────────────────────────────────────
 
     def _start_pull(self, *_):
-        """Pull işlemini başlat"""
+        """Start pull operation"""
         selected = [i for i in self.repo_items if i.selected]
         if not selected:
-            self._toast("Lütfen en az bir repo seçin.", error=True)
+            self._toast("Please select at least one repository.", error=True)
             return
 
         self.pull_btn.set_sensitive(False)
-        self.pull_btn.set_label("İşleniyor…")
+        self.pull_btn.set_label("Processing…")
         self.progress_bar.set_visible(True)
         self.progress_bar.set_fraction(0)
 
@@ -485,7 +527,7 @@ class MainWindow(Adw.ApplicationWindow):
         ).start()
 
     def _pull_thread(self, items: list[RepoItem]):
-        """Pull işlemini arka planda yap"""
+        """Perform pull operation in background"""
         total = len(items)
         ok = fail = 0
 
@@ -520,37 +562,37 @@ class MainWindow(Adw.ApplicationWindow):
         GLib.idle_add(self._on_pull_done, ok, fail)
 
     def _run(self, cmd):
-        """Git komutunu çalıştır"""
+        """Execute git command"""
         r = subprocess.run(cmd, capture_output=True, text=True)
         if r.returncode != 0:
             raise RuntimeError(r.stderr.strip() or f"Kod {r.returncode}")
 
     def _on_pull_done(self, ok, fail):
-        """Pull işlemi bittiğinde çalışır"""
+        """Called when pull operation completes"""
         self.pull_btn.set_sensitive(True)
-        self.pull_btn.set_label("Seçilenleri Çek")
+        self.pull_btn.set_label("Pull Selected")
         self.progress_bar.set_fraction(1.0)
         GLib.timeout_add(1500, lambda: self.progress_bar.set_visible(False))
 
         if fail == 0:
-            self._toast(f"✓ {ok} repo başarıyla çekildi")
+            self._toast(f"✓ {ok} repositories pulled successfully")
         else:
-            self._toast(f"{ok} başarılı, {fail} hatalı", error=True)
+            self._toast(f"{ok} successful, {fail} failed", error=True)
 
-    # ── Ayarlar diyaloğu ─────────────────────────────────────────────────────
+    # ── Settings dialog ─────────────────────────────────────────────────────
 
     def _show_settings(self, *_):
-        """Ayarlar diyaloğunu göster"""
+        """Show settings dialog"""
         dialog = Adw.PreferencesDialog()
-        dialog.set_title("Ayarlar")
+        dialog.set_title("Settings")
         dialog.set_search_enabled(False)
 
-        page = Adw.PreferencesPage(title="Genel", icon_name="preferences-system-symbolic")
+        page = Adw.PreferencesPage(title="General", icon_name="preferences-system-symbolic")
         dialog.add(page)
 
         group = Adw.PreferencesGroup(
             title="GitHub Token",
-            description="Private repolara erişmek için kişisel erişim tokeni. "
+            description="Personal access token to access private repositories. "
                         "Settings → Developer settings → Personal access tokens"
         )
         page.add(group)
@@ -559,25 +601,25 @@ class MainWindow(Adw.ApplicationWindow):
         token_row.set_text(self.token_val)
         group.add(token_row)
 
-        about_group = Adw.PreferencesGroup(title="Hakkında")
+        about_group = Adw.PreferencesGroup(title="About")
         page.add(about_group)
 
         about_row = Adw.ActionRow(
             title="GitHub Puller",
-            subtitle=f"Sürüm {APP_VERSION} · alihaydarsucu"
+            subtitle=f"Version {APP_VERSION} · alihaydarsucu"
         )
         about_row.add_prefix(Gtk.Image(icon_name="system-software-install-symbolic"))
         about_group.add(about_row)
 
         dialog.present(self)
 
-        # Token kaydet bağlantısı için kapat sinyali
+        # Connection to save token on close signal
         def _on_close(*_):
             new_token = token_row.get_text().strip()
             if new_token != self.token_val:
                 self.token_val = new_token
-                self.config.token = new_token  # Config'e kaydet
-                self._toast("Token kaydedildi" if new_token else "Token temizlendi")
+                self.config.token = new_token  # Save to config
+                self._toast("Token saved" if new_token else "Token cleared")
         
         dialog.connect("closed", _on_close)
 

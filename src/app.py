@@ -8,7 +8,7 @@ from .main_window import MainWindow
 APP_ID = "io.github.alihaydarsucu.GitHubPuller"
 
 class App(Adw.Application):
-    """Ana uygulama sınıfı"""
+    """Main application class"""
     def __init__(self):
         super().__init__(application_id=APP_ID,
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
@@ -17,7 +17,7 @@ class App(Adw.Application):
 
     def _on_activate(self, app):
         print("App activation signal received")
-        # Zaten açık pencere var mı kontrol et
+        # Check if window is already open
         windows = self.get_windows()
         if windows:
             print("Window already exists, bringing to front")

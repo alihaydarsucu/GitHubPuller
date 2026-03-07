@@ -3,7 +3,7 @@ gi.require_version("Gtk", "4.0")
 from gi.repository import GObject
 
 class RepoItem(GObject.Object):
-    """Repo bilgilerini tutan sınıf"""
+    """Class holding repository information"""
     __gtype_name__ = "RepoItem"
 
     def __init__(self, repo_data: dict):
@@ -19,7 +19,7 @@ class RepoItem(GObject.Object):
         self.branches_loaded: bool = False
         self.loading: bool = False
         
-        # UI bileşenleri (MainWindow tarafından ayarlanacak)
+        # UI components (will be set by MainWindow)
         self._check_widget = None
         self._branch_combo = None
         self._branch_spinner = None
