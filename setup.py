@@ -41,11 +41,6 @@ setup(
             "github-puller=src.app:main",
         ],
     },
-    data_files=[
-        ("share/applications", ["github-puller.desktop"]),
-        ("share/icons/hicolor/scalable/apps", ["icons/github-puller.svg"]),
-        ("share/metainfo", ["github-puller.metainfo.xml"]),
-    ],
     include_package_data=True,
     zip_safe=False,
 )
