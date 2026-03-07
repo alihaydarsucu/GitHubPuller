@@ -92,9 +92,27 @@ if command -v update-desktop-database >/dev/null 2>&1; then
     update-desktop-database ~/.local/share/applications 2>/dev/null || true
 fi
 
-# Update icon cache
+# Update icon cache (try multiple methods)
 if command -v gtk-update-icon-cache >/dev/null 2>&1; then
     gtk-update-icon-cache -f ~/.local/share/icons/hicolor 2>/dev/null || true
+fi
+
+if command -v gtk4-update-icon-cache >/dev/null 2>&1; then
+    gtk4-update-icon-cache -f ~/.local/share/icons/hicolor 2>/dev/null || true
+fi
+
+# Update XDG mime database
+if command -v update-mime-database >/dev/null 2>&1; then
+    update-mime-database ~/.local/share/mime 2>/dev/null || true
+fi
+
+# Refresh GNOME desktop integration
+echo "🔄 Refreshing desktop integration..."
+if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]; then
+    echo "💡 For immediate icon appearance in GNOME:"
+    echo "   - Press Alt+F2, type 'r' and press Enter (refresh shell)"
+    echo "   - Or logout and login again"
+    echo "   - Or wait a few minutes for automatic refresh"
 fi
 
 # Add ~/.local/bin to PATH if not already present
