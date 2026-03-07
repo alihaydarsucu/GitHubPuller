@@ -63,16 +63,16 @@ pip install --user . --break-system-packages
 
 # Copy desktop file
 mkdir -p ~/.local/share/applications
-cp github-puller.desktop ~/.local/share/applications/
-chmod +x ~/.local/share/applications/github-puller.desktop
+cp io.github.alihaydarsucu.GitHubPuller.desktop ~/.local/share/applications/
+chmod +x ~/.local/share/applications/io.github.alihaydarsucu.GitHubPuller.desktop
 
 # Copy icon
 mkdir -p ~/.local/share/icons/hicolor/scalable/apps
-cp icons/github-puller.svg ~/.local/share/icons/hicolor/scalable/apps/
+cp icons/io.github.alihaydarsucu.GitHubPuller.svg ~/.local/share/icons/hicolor/scalable/apps/
 
 # Copy metainfo file
 mkdir -p ~/.local/share/metainfo
-cp github-puller.metainfo.xml ~/.local/share/metainfo/
+cp io.github.alihaydarsucu.GitHubPuller.metainfo.xml ~/.local/share/metainfo/
 
 # Update desktop database
 if command -v update-desktop-database >/dev/null 2>&1; then
