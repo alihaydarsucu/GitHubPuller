@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Sürüm bilgisi
-version = "1.0.1"
+version = "1.0.4"
 
 setup(
     name="github-puller",
