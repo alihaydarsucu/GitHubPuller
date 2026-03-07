@@ -1,6 +1,6 @@
 <div align="center">
 
-![GitHub Puller](/icons/github-puller.svg) 
+<img src="icons/github-puller.svg" alt="GitHub Puller" width="150" height="150">
 
 # GitHub Puller
 
@@ -21,14 +21,17 @@ Modern GTK4 + libadwaita application for batch pulling GitHub repositories.
 
 > **Why not GitHub Desktop?** Unlike GitHub Desktop which focuses on single-repo management, GitHub Puller lets you batch clone/pull dozens of repositories at once with branch selection and smart filtering.
 
-<details>
-<summary>📷 Click to see application screenshot</summary>
+## Screenshots
 
-![GitHub Puller Screenshot](https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/screenshots/main.png)
+<div align="center">
 
-*Modern GTK4 + libadwaita interface showing repository list with batch selection*
+| Light Mode | Dark Mode |
+|------------|-----------|
+| <img src="Images/GithubPuller_light.png" alt="GitHub Puller Light Mode" width="400"> | <img src="Images/GithubPuller_dark.png" alt="GitHub Puller Dark Mode" width="400"> |
 
-</details>
+*Modern GTK4 + libadwaita interface with adaptive theming*
+
+</div>
 
 ## Installation
 
