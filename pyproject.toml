@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "github-puller"
+version = "1.0.0"
+description = "Batch GitHub repository downloader application"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Ali Haydar Sucu", email = "alihaydarsucu@gmail.com"}
+]
+maintainers = [
+    {name = "Ali Haydar Sucu", email = "alihaydarsucu@gmail.com"}
+]
+keywords = ["github", "git", "clone", "repository", "batch", "GTK", "GNOME"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Environment :: X11 Applications :: GTK",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "PyGObject>=3.42.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/alihaydarsucu/GitHubPuller"
+Repository = "https://github.com/alihaydarsucu/GitHubPuller"
+Issues = "https://github.com/alihaydarsucu/GitHubPuller/issues"
+
+[project.scripts]
+github-puller = "src.app:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.json"]

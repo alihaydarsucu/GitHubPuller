@@ -30,18 +30,15 @@
       "name": "github-puller",
       "buildsystem": "simple", 
       "build-commands": [
-        "python3 setup.py build",
-        "python3 setup.py install --prefix=${FLATPAK_DEST} --root=/ --optimize=1 --skip-build",
-        "install -D github-puller.desktop ${FLATPAK_DEST}/share/applications/github-puller.desktop",
-        "install -D icons/github-puller.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/github-puller.svg",
-        "install -D github-puller.metainfo.xml ${FLATPAK_DEST}/share/metainfo/github-puller.metainfo.xml"
+        "python3 setup.py install --prefix=${FLATPAK_DEST} --root=/ --optimize=1",
+        "install -D io.github.alihaydarsucu.GitHubPuller.desktop ${FLATPAK_DEST}/share/applications/io.github.alihaydarsucu.GitHubPuller.desktop",
+        "install -D icons/io.github.alihaydarsucu.GitHubPuller.svg ${FLATPAK_DEST}/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg",
+        "install -D io.github.alihaydarsucu.GitHubPuller.metainfo.xml ${FLATPAK_DEST}/share/metainfo/io.github.alihaydarsucu.GitHubPuller.metainfo.xml"
       ],
       "sources": [
         {
-          "type": "archive",
-          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.0.tar.gz",
-          "sha256": "f4014dfa66d3848b3e3e4d9938a6252646cd100c2c4ba60d5cf796fc8273e58d",
-          "strip-components": 1
+          "type": "dir",
+          "path": "."
         }
       ]
     }
