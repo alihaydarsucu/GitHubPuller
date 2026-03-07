@@ -1,6 +1,7 @@
 import os
 import threading
 import subprocess
+import shutil
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
@@ -548,18 +549,26 @@ class MainWindow(Adw.ApplicationWindow):
             os.makedirs(self.target_dir, exist_ok=True)
 
             try:
+                git_cmd = self._get_git_executable()
                 if os.path.isdir(os.path.join(repo_dir, ".git")):
-                    self._run(["git", "-C", repo_dir, "fetch", "--all"])
-                    self._run(["git", "-C", repo_dir, "checkout", item.chosen_branch])
-                    self._run(["git", "-C", repo_dir, "pull", "origin", item.chosen_branch])
+                    self._run([git_cmd, "-C", repo_dir, "fetch", "--all"])
+                    self._run([git_cmd, "-C", repo_dir, "checkout", item.chosen_branch])
+                    self._run([git_cmd, "-C", repo_dir, "pull", "origin", item.chosen_branch])
                 else:
-                    self._run(["git", "clone", "-b", item.chosen_branch, url, repo_dir])
+                    self._run([git_cmd, "clone", "-b", item.chosen_branch, url, repo_dir])
                 ok += 1
             except Exception as e:
                 fail += 1
                 GLib.idle_add(self._toast, f"✘ {item.name}: {e}", True)
 
         GLib.idle_add(self._on_pull_done, ok, fail)
+
+    def _get_git_executable(self):
+        """Find git executable path"""
+        git_path = shutil.which("git")
+        if not git_path:
+            raise RuntimeError("Git not found in PATH. Please install git.")
+        return git_path
 
     def _run(self, cmd):
         """Execute git command"""
