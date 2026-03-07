@@ -63,9 +63,9 @@ TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
 
 # Download and extract release
-echo "📥 Downloading GitHub Puller v1.0.3..."
-curl -fsSL https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.3.tar.gz | tar -xz
-cd GitHubPuller-1.0.3
+echo "📥 Downloading GitHub Puller v1.0.4..."
+curl -fsSL https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.4.tar.gz | tar -xz
+cd GitHubPuller-1.0.4
 
 # Local installation - bypass system Python policies
 pip install --user . --break-system-packages

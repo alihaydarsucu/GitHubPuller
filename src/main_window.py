@@ -10,7 +10,7 @@ from .repo_item import RepoItem
 from .github_api import fetch_all_repos, fetch_branches
 from .config import Config
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.4"
 
 class MainWindow(Adw.ApplicationWindow):
     """Main window class"""
