@@ -38,8 +38,10 @@
       ],
       "sources": [
         {
-          "type": "dir",
-          "path": "."
+          "type": "archive",
+          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.0.tar.gz",
+          "sha256": "f4014dfa66d3848b3e3e4d9938a6252646cd100c2c4ba60d5cf796fc8273e58d",
+          "strip-components": 1
         }
       ]
     }
