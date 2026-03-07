@@ -77,7 +77,23 @@ chmod +x ~/.local/share/applications/io.github.alihaydarsucu.GitHubPuller.deskto
 
 # Copy icon
 mkdir -p ~/.local/share/icons/hicolor/scalable/apps
+mkdir -p ~/.local/share/icons/hicolor/{48x48,64x64,128x128}/apps
 cp icons/io.github.alihaydarsucu.GitHubPuller.svg ~/.local/share/icons/hicolor/scalable/apps/
+
+# Create PNG versions for better compatibility
+if command -v convert >/dev/null 2>&1; then
+    convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 48x48 ~/.local/share/icons/hicolor/48x48/apps/io.github.alihaydarsucu.GitHubPuller.png
+    convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 64x64 ~/.local/share/icons/hicolor/64x64/apps/io.github.alihaydarsucu.GitHubPuller.png
+    convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 128x128 ~/.local/share/icons/hicolor/128x128/apps/io.github.alihaydarsucu.GitHubPuller.png
+    echo "✅ PNG icons created for better compatibility"
+elif command -v inkscape >/dev/null 2>&1; then
+    inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/48x48/apps/io.github.alihaydarsucu.GitHubPuller.png -w 48 -h 48
+    inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/64x64/apps/io.github.alihaydarsucu.GitHubPuller.png -w 64 -h 64
+    inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/128x128/apps/io.github.alihaydarsucu.GitHubPuller.png -w 128 -h 128
+    echo "✅ PNG icons created with Inkscape"
+else
+    echo "ℹ️ SVG icon installed (ImageMagick or Inkscape recommended for PNG conversion)"
+fi
 
 # Copy metainfo file
 mkdir -p ~/.local/share/metainfo
