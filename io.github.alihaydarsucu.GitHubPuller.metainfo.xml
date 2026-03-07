@@ -22,7 +22,9 @@
     </ul>
   </description>
   
-  <launchable type="desktop-id">github-puller.desktop</launchable>
+  <icon type="stock">io.github.alihaydarsucu.GitHubPuller</icon>
+  
+  <launchable type="desktop-id">io.github.alihaydarsucu.GitHubPuller.desktop</launchable>
   
   <screenshots>
     <screenshot type="default">
