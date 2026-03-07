@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 # Sürüm bilgisi
-version = "1.0.4"
+version = "1.0.5"
 
 setup(
     name="github-puller",
@@ -41,6 +41,11 @@ setup(
             "github-puller=src.app:main",
         ],
     },
+    data_files=[
+        ("share/applications", ["io.github.alihaydarsucu.GitHubPuller.desktop"]),
+        ("share/icons/hicolor/scalable/apps", ["icons/io.github.alihaydarsucu.GitHubPuller.svg"]),
+        ("share/metainfo", ["io.github.alihaydarsucu.GitHubPuller.metainfo.xml"]),
+    ],
     include_package_data=True,
     zip_safe=False,
 )
