@@ -17,7 +17,7 @@ setup(
     description="Batch GitHub repository downloader application",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/alihaydarsucu/github-puller",
+    url="https://github.com/alihaydarsucu/GitHubPuller",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",

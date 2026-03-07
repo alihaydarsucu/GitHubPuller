@@ -27,12 +27,12 @@
   <screenshots>
     <screenshot type="default">
       <caption>Main screen</caption>
-      <image>https://raw.githubusercontent.com/alihaydarsucu/github-puller/main/screenshots/main.png</image>
+      <image>https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/screenshots/main.png</image>
     </screenshot>
   </screenshots>
   
-  <url type="homepage">https://github.com/alihaydarsucu/github-puller</url>
-  <url type="bugtracker">https://github.com/alihaydarsucu/github-puller/issues</url>
+  <url type="homepage">https://github.com/alihaydarsucu/GitHubPuller</url>
+  <url type="bugtracker">https://github.com/alihaydarsucu/GitHubPuller/issues</url>
   
   <provides>
     <binary>github-puller</binary>
