@@ -84,6 +84,13 @@ if command -v gtk-update-icon-cache >/dev/null 2>&1; then
     gtk-update-icon-cache -f ~/.local/share/icons/hicolor 2>/dev/null || true
 fi
 
+# Add ~/.local/bin to PATH if not already present
+if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+    echo "✅ Added ~/.local/bin to PATH"
+    echo "💡 Run 'source ~/.bashrc' or restart terminal to use 'github-puller' command"
+fi
+
 echo ""
 echo "🎉 Installation completed!"
 echo ""
