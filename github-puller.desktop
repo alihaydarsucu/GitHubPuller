@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=GitHub Puller
+Comment=GitHub repositories bulk downloader
+
+Exec=github-puller
+Icon=github-puller
+Terminal=false
+Type=Application
+Categories=Development;RevisionControl;
+Keywords=git;github;clone;pull;repository;
+StartupNotify=true
+StartupWMClass=github-puller
