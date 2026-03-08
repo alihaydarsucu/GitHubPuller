@@ -2,18 +2,18 @@
 
 set -e
 
-echo "🚀 GitHub Puller Installation Script"
+echo "GitHub Puller installation"
 echo "======================================"
 
 # Root check
 if [[ $EUID -eq 0 ]]; then
-   echo "❌ This script should not be run as root!"
-   echo "   Please run as a normal user."
+    echo "This script should not be run as root."
+    echo "Please run it as a normal user."
    exit 1
 fi
 
 # Check system dependencies
-echo "📦 Checking system dependencies..."
+echo "Checking system dependencies..."
 
 REQUIRED_PACKAGES=(
     "python3-gi"
@@ -35,28 +35,28 @@ for package in "${REQUIRED_PACKAGES[@]}"; do
 done
 
 if [ ${#MISSING_PACKAGES[@]} -ne 0 ]; then
-    echo "❌ Missing packages detected:"
+    echo "Missing packages:"
     printf '   - %s\n' "${MISSING_PACKAGES[@]}"
     echo ""
-    echo "📥 To install missing packages, run:"
+    echo "To install missing packages, run:"
     echo "   sudo apt update && sudo apt install ${MISSING_PACKAGES[*]}"
     echo ""
     read -p "Install them automatically now? (y/N): " -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "🔧 Installing packages..."
+        echo "Installing packages..."
         sudo apt update
         sudo apt install -y "${MISSING_PACKAGES[@]}"
-        echo "✅ System dependencies installed!"
+        echo "System dependencies installed."
     else
-        echo "❌ Installation cancelled. Please install required packages first."
+        echo "Installation cancelled. Please install required packages first."
         exit 1
     fi
 else
-    echo "✅ All system dependencies are available!"
+    echo "All required system dependencies are available."
 fi
 
 echo ""
-echo "🔧 Installing GitHub Puller..."
+echo "Installing GitHub Puller..."
 
 # Create temporary directory
 TEMP_DIR=$(mktemp -d)
@@ -85,14 +85,14 @@ if command -v convert >/dev/null 2>&1; then
     convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 48x48 ~/.local/share/icons/hicolor/48x48/apps/io.github.alihaydarsucu.GitHubPuller.png
     convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 64x64 ~/.local/share/icons/hicolor/64x64/apps/io.github.alihaydarsucu.GitHubPuller.png
     convert ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -resize 128x128 ~/.local/share/icons/hicolor/128x128/apps/io.github.alihaydarsucu.GitHubPuller.png
-    echo "✅ PNG icons created for better compatibility"
+    echo "Created PNG icons for compatibility."
 elif command -v inkscape >/dev/null 2>&1; then
     inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/48x48/apps/io.github.alihaydarsucu.GitHubPuller.png -w 48 -h 48
     inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/64x64/apps/io.github.alihaydarsucu.GitHubPuller.png -w 64 -h 64
     inkscape ~/.local/share/icons/hicolor/scalable/apps/io.github.alihaydarsucu.GitHubPuller.svg -o ~/.local/share/icons/hicolor/128x128/apps/io.github.alihaydarsucu.GitHubPuller.png -w 128 -h 128
-    echo "✅ PNG icons created with Inkscape"
+    echo "Created PNG icons with Inkscape."
 else
-    echo "ℹ️ SVG icon installed (ImageMagick or Inkscape recommended for PNG conversion)"
+    echo "Installed SVG icon (ImageMagick or Inkscape can be used for PNG conversion)."
 fi
 
 # Copy metainfo file
@@ -123,28 +123,27 @@ if command -v update-mime-database >/dev/null 2>&1; then
 fi
 
 # Refresh GNOME desktop integration
-echo "🔄 Refreshing desktop integration..."
+echo "Refreshing desktop integration..."
 if [ "$XDG_CURRENT_DESKTOP" = "GNOME" ]; then
-    echo "💡 For immediate icon appearance in GNOME:"
-    echo "   - Press Alt+F2, type 'r' and press Enter (refresh shell)"
-    echo "   - Or logout and login again"
-    echo "   - Or wait a few minutes for automatic refresh"
+    echo "For immediate icon refresh in GNOME:"
+    echo "   - Press Alt+F2, type 'r', then press Enter"
+    echo "   - Or log out and log in again"
 fi
 
 # Add ~/.local/bin to PATH if not already present
 if ! echo "$PATH" | grep -q "$HOME/.local/bin"; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-    echo "✅ Added ~/.local/bin to PATH"
-    echo "💡 Run 'source ~/.bashrc' or restart terminal to use 'github-puller' command"
+    echo "Added ~/.local/bin to PATH in ~/.bashrc."
+    echo "Run 'source ~/.bashrc' or restart the terminal to use 'github-puller'."
 fi
 
 echo ""
-echo "🎉 Installation completed!"
+echo "Installation completed."
 echo ""
-echo "📍 You can launch the application:"
+echo "You can launch the application:"
 echo "   • From application menu: 'GitHub Puller'"
 echo "   • Terminal: github-puller"
 echo "   • Alt+F2: github-puller"
 echo ""
-echo "🔧 To uninstall: pip uninstall github-puller"
-echo "📚 More info: https://github.com/alihaydarsucu/GitHubPuller"
+echo "To uninstall: pip uninstall github-puller"
+echo "More info: https://github.com/alihaydarsucu/GitHubPuller"

@@ -4,22 +4,20 @@
 
 # GitHub Puller
 
-Modern GTK4 + libadwaita application for batch pulling GitHub repositories.
+GTK4 + libadwaita application for cloning and updating multiple GitHub repositories.
 
 ![Made with](https://skillicons.dev/icons?i=python,gtk,linux,git,github)
 </div>
 
 ## Features
 
-- 🚀 **Modern Interface**: Built with GTK4 and libadwaita
-- 🔍 **Easy Search**: Find your repositories easily
-- 🌿 **Branch Selection**: Choose different branch for each repository  
-- 🔒 **Private Repo Support**: Access your private repositories with GitHub token
-- 💾 **Smart Update**: Existing repositories are updated, new ones are cloned
-- ⚡ **Multi-Threading**: Process multiple repositories simultaneously
-- 🎯 **Target Directory**: Select and save download directory
-
-> **Why not GitHub Desktop?** Unlike GitHub Desktop which focuses on single-repo management, GitHub Puller lets you batch clone/pull dozens of repositories at once with branch selection and smart filtering.
+- Built with GTK4 and libadwaita
+- Search repositories by name
+- Choose a branch per repository
+- Supports private repositories with a GitHub token
+- Clones missing repositories and pulls existing ones
+- Processes repositories in parallel
+- Lets you choose and save a target directory
 
 ## Screenshots
 
@@ -35,19 +33,18 @@ Modern GTK4 + libadwaita application for batch pulling GitHub repositories.
 
 ## Installation
 
-### 🚀 Recommended Installation
+### Quick install
 
-**One-line install (easiest):**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/install.sh | bash
 ```
 
-### 📦 Alternative Methods
+### Other options
 
 <details>
-<summary>Click to expand other installation options</summary>
+<summary>Show alternative installation methods</summary>
 
-**Coming soon on Flathub:**
+**Flathub (planned):**
 ```bash
 flatpak install flathub io.github.alihaydarsucu.GitHubPuller
 ```
@@ -74,20 +71,20 @@ make dev
 
 ## Usage
 
-1. Launch the application: `github-puller`
+1. Start the app: `github-puller`
 2. Enter your GitHub username
-3. Add GitHub token from Settings for private repositories
+3. (Optional) Add a GitHub token in Settings for private repositories
 4. Select desired repositories
-5. Set target directory (default: ~/Desktop/Projects)
-6. Click "Pull Selected" button
+5. Set a target directory (default: `~/Desktop/Projects`)
+6. Click **Pull Selected**
 
 ## GitHub Token
 
-To access your private repositories:
-1. GitHub → Settings → Developer settings → Personal access tokens
-2. Create new token with "Generate new token"  
-3. Grant `repo` permission
-4. Paste it in Application Settings → Token section
+To access private repositories:
+1. Go to GitHub → Settings → Developer settings → Personal access tokens
+2. Create a new token
+3. Give it `repo` permission
+4. Paste it into the app settings
 
 ## Development
 
@@ -101,8 +98,8 @@ pip install -e .
 
 ## Contributing
 
-Pull requests are welcome! For major changes, please open an issue first.
+Pull requests are welcome. For larger changes, opening an issue first is helpful.
 
 ## License
 
-MIT - See `LICENSE` file for details.
+MIT. See `LICENSE`.

@@ -7,18 +7,18 @@
   <summary>Batch pull GitHub repositories</summary>
   <description>
     <p>
-      GitHub Puller is a modern application for batch pulling your GitHub repositories.
-      Built with GTK4 and libadwaita, it provides perfect integration with GNOME desktop.
+      GitHub Puller is a desktop application for cloning and updating multiple GitHub repositories.
+      It is built with GTK4 and libadwaita.
     </p>
     <p>Features:</p>
     <ul>
-      <li>Modern and user-friendly interface</li>
+      <li>GTK4 + libadwaita interface</li>
       <li>Repository search and filtering</li>
-      <li>Branch selection</li>
+      <li>Branch selection per repository</li>
       <li>Private repository support (with GitHub token)</li>
-      <li>Smart updates (clone/pull)</li>
-      <li>Multi-repository processing</li>
-      <li>Target directory selection and saving</li>
+      <li>Clone or pull depending on repository state</li>
+      <li>Parallel processing for selected repositories</li>
+      <li>Saved target directory</li>
     </ul>
   </description>
   
@@ -80,7 +80,7 @@
       <description>
         <p>Initial release:</p>
         <ul>
-          <li>Modern interface with GTK4 + libadwaita</li>
+          <li>GTK4 + libadwaita interface</li>
           <li>GitHub API integration</li>
           <li>Batch repository pulling</li>
           <li>Branch selection</li>
