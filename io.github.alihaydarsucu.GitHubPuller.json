@@ -32,9 +32,8 @@
       "sources": [
         {
           "type": "archive",
-          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.7.tar.gz",
-          "sha256": "fc773991464dd7fa1ed08f361513e48bd2bd30fc4287a50514dc4455fde6f37a",
-          "strip-components": 1
+          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.8.tar.gz",
+          "sha256": "PLACEHOLDER"
         }
       ]
     }

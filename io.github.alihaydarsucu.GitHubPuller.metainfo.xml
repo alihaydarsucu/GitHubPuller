@@ -28,19 +28,34 @@
   
   <screenshots>
     <screenshot type="default">
-      <caption>Main screen</caption>
-      <image>https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/screenshots/main.png</image>
+      <caption>GitHub Puller - Light theme</caption>
+      <image>https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/Images/GithubPuller_light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>GitHub Puller - Dark theme</caption>
+      <image>https://raw.githubusercontent.com/alihaydarsucu/GitHubPuller/main/Images/GithubPuller_dark.png</image>
     </screenshot>
   </screenshots>
   
   <url type="homepage">https://github.com/alihaydarsucu/GitHubPuller</url>
   <url type="bugtracker">https://github.com/alihaydarsucu/GitHubPuller/issues</url>
+  <url type="vcs-browser">https://github.com/alihaydarsucu/GitHubPuller</url>
   
   <provides>
     <binary>github-puller</binary>
   </provides>
   
   <releases>
+    <release version="1.0.8" date="2026-03-08">
+      <description>
+        <p>Flathub submission fixes:</p>
+        <ul>
+          <li>Fixed appstream screenshots</li>
+          <li>Added vcs-browser URL</li>
+          <li>Cleaned up manifest</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.7" date="2026-03-08">
       <description>
         <p>Version consistency and cleanup:</p>

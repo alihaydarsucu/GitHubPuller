@@ -8,7 +8,7 @@ def api_get(path: str, token: str = "") -> list | dict:
     url = GITHUB_API + path
     req = urllib.request.Request(url)
     req.add_header("Accept", "application/vnd.github+json")
-    req.add_header("User-Agent", "GithubPuller/1.0.7")
+    req.add_header("User-Agent", "GithubPuller/1.0.8")
     if token:
         req.add_header("Authorization", f"token {token}")
     with urllib.request.urlopen(req, timeout=15) as r:
