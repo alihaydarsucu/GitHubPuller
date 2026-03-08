@@ -41,6 +41,16 @@
   </provides>
   
   <releases>
+    <release version="1.0.7" date="2026-03-08">
+      <description>
+        <p>Version consistency and cleanup:</p>
+        <ul>
+          <li>Unified version numbers across all project files</li>
+          <li>Updated to GNOME Platform 49 runtime</li>
+          <li>Improved security with FileChooser portal</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.5" date="2026-03-08">
       <description>
         <p>Flathub compatibility improvements:</p>

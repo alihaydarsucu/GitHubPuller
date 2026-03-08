@@ -1,7 +1,7 @@
 {
   "id": "io.github.alihaydarsucu.GitHubPuller",
   "runtime": "org.gnome.Platform",
-  "runtime-version": "48",
+  "runtime-version": "49",
   "sdk": "org.gnome.Sdk",
   "command": "github-puller",
   "finish-args": [
@@ -9,8 +9,7 @@
     "--share=ipc",
     "--socket=fallback-x11",
     "--socket=wayland",
-    "--device=dri",
-    "--filesystem=xdg-download"
+    "--device=dri"
   ],
   "cleanup": [
     "/include",
@@ -33,8 +32,8 @@
       "sources": [
         {
           "type": "archive",
-          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.5.tar.gz",
-          "sha256": "176cdfdf18623ef0d97280506e1d2557be8429dadc6450ed25ad49e87b84ec5a",
+          "url": "https://github.com/alihaydarsucu/GitHubPuller/archive/v1.0.7.tar.gz",
+          "sha256": "PLACEHOLDER",
           "strip-components": 1
         }
       ]
