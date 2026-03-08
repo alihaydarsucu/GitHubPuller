@@ -110,3 +110,6 @@ build-dir/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+io.github.alihaydarsucu.GitHubPuller.json
+.gitignore
