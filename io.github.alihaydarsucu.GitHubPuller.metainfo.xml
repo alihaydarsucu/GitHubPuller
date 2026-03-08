@@ -41,6 +41,16 @@
   </provides>
   
   <releases>
+    <release version="1.0.5" date="2026-03-08">
+      <description>
+        <p>Flathub compatibility improvements:</p>
+        <ul>
+          <li>Updated to GNOME Platform 48 (current runtime)</li>
+          <li>Improved permission handling for enhanced security</li>
+          <li>Enhanced package data installation with setuptools</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.0" date="2026-03-07">
       <description>
         <p>Initial release:</p>
